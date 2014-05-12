@@ -1,6 +1,7 @@
 require 'active_record'
 require 'active_record/log_subscriber'
 require 'u-log'
+require 'u-log/compat'
 
 module U; module Log
   class ActiveRecordSubscriber < ActiveSupport::LogSubscriber
@@ -36,16 +37,17 @@ module U; module Log
 
       args[:elapsed] = [event.duration.round(1), 'ms']
 
-      U.log(args)
+      logger.ulogger.log(args)
     end
 
     def identity(event)
-      U.log(name: event.payload[:name], line: event.payload[:line])
+      logger.ulogger.log(name: event.payload[:name], line: event.payload[:line])
     end
-
-    def logger; fail end
   end
 end end
+
+# Replace the base logger with our own compatible logger
+ActiveRecord::Base.logger = U.logger.compat
 
 # Subscribe u-log to the AR events
 U::Log::ActiveRecordSubscriber.attach_to :active_record
@@ -64,6 +66,3 @@ ActiveSupport::LogSubscriber.log_subscribers.each do |subscriber|
     end
   end
 end
-
-# Make sure it has a logger just in case
-#ActiveRecord::Base.logger = U.logger

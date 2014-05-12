@@ -11,8 +11,10 @@ module U; module Log
       5 => :unknown,
     }
 
-    def initialize(logger)
-      @logger = logger
+    attr_reader :ulogger
+
+    def initialize(ulogger)
+      @ulogger = ulogger
     end
 
     def log(severity, message = nil, progname = nil, &block)

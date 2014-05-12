@@ -50,6 +50,12 @@ module U; module Log
 
     def to_h; @data; end
 
+    # Returns a ::Logger-compatible object.
+    #
+    # Make sure to require 'u-log/compat' before invoking this method.
+    #
+    def compat; Compat.new(self) end
+
     protected
 
     def with_data(data)
