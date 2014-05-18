@@ -6,3 +6,15 @@ U::Log - a different take on logging
 
 * Very simple (aka. fast)
 * No log level
+
+
+
+TODO
+----
+
+Error reporting
+
+Create message context
+
+
+Because the log context is hierarchical, 

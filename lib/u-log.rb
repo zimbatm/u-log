@@ -44,6 +44,8 @@ module U; module Log
       with_data @data.merge(data.to_h)
     end
 
+    alias merge context
+
     def to_s
       @format.dump(evaluate_procs @data)
     end
@@ -64,7 +66,7 @@ module U; module Log
 
     def evaluate_procs(obj)
       obj.each_with_object({}) do |(k,v), merged|
-        merged[k] = v.respond_to?(:call) ? v.call : v
+        merged[k] = v.respond_to?(:call) ? (v.call rescue $!) : v
       end
     end
 
