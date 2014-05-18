@@ -1,12 +1,12 @@
 $:.unshift File.expand_path('../lib', __FILE__)
 $:.unshift File.expand_path('../../lines-ruby/lib', __FILE__)
 
-
 require 'benchmark/ips'
 require 'u-log'
+require 'time'
 
-message = {
-  at: Time.now.utc,
+$message = {
+  at: Time.now.utc.iso8601,
   pid: Process.pid,
   app: File.basename($0),
   pri: :info,
@@ -14,36 +14,31 @@ message = {
   elapsed: [344, 'ms'],
 }
 
+Array.new(10 ** 7).to_s
+
 formatters = [
-  ['u-log', 'U::Log::Fmt'],
-  ['u-log', 'U::Log::Fmt2'],
-  ['u-log', 'U::Log::Fmt3'],
-  ['u-log', 'U::Log::Fmt4'],
-  ['u-log', 'U::Log::Fmt5'],
-  ['json', 'JSON'],
-  ['lines', 'Lines'],
-  ['msgpack', 'MessagePack'],
+  ['u-log', "U::Log::Fmt.dump($message)"],
+  ['lines', "Lines.dump($message)"],
+
+  ['json', "$message.to_json"],
+  ['oj', "Oj.dump($message)"],
+  ['yajl', "Yajl.dump($message)"],
+  
+  ['msgpack', "MessagePack.dump($message)"],
+  ['bson', "$message.to_bson"],
+  ['tnetstring', "TNetstring.dump($message)"],
 ]
 
 Benchmark.ips do |x|
-  formatters.each do |(feature, mod_name)|
+  x.compare!
+  formatters.each do |(feature, action)|
     begin
       require feature
 
-      mod = eval(mod_name)
+      data = eval action
+      puts "%-12s %-5d %s" % [feature, data.size, data]
 
-      unless mod.respond_to?(:dump)
-        puts "mod #{mod} doesn't respond to #dump"
-        next
-      end
-
-      p [feature, mod, mod.dump(message)]
-
-      x.report mod_name do |n|
-        n.times do
-          U::Log::Fmt.dump(message)
-        end
-      end
+      x.report feature, action
     rescue LoadError
       puts "could not load #{feature}"
     end
