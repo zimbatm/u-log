@@ -1,23 +1,30 @@
+# U::Log is an opinionated logging library.
+#
+# The main take is that logs are structured.
+# Too much time is spend formatting logs, they should look nice by default.
+# That's why U::Log uses the lines format by default.
+#
+# Log everything in development AND production.
+# Logs should be easy to read, grep and parse.
+# Logging something should never fail.
+# Let the system handle the storage. Write to syslog or STDERR.
+# No log levels necessary. Just log whatever you want.
+#
+# Example:
+#
+#     U.log("Oops !", foo: {}, g: [])
+#     #outputs:
+#     # at=2013-03-07T09:21:39Z pid=3242 app=some-process msg="Oops !" foo={} g=[]
+#
+# Usage:
+#
+#     
+#     U.log(foo: 3, msg: "This")
+#
+#     ctx = U.log_context(encoding_id: Log.id)
+#     ctx.log({})
+#
 module U; module Log
-  # Very simple k="v" log format used by default by the Logger.
-  #
-  # Should be compatible for logfmt parsing. See
-  # http://godoc.org/github.com/kr/logfmt
-  module Fmt; extend self
-    def dump(obj)
-      obj.map do |(k, v)|
-        "#{k}=#{dump_v v}"
-      end.join(' ')
-    end
-
-    def dump_v(obj)
-      obj = obj.to_s
-      obj.index(/['"\s]/) ? obj.inspect : obj
-    rescue
-      $!.to_s
-    end
-  end
-
   # A very simple logger and log context
   #
   class Logger
@@ -85,13 +92,9 @@ module U; module Log
   end
 end end
 
-module U
-  # Default global
-  @logger = Log::Logger.new($stderr, Log::Fmt,
-    at:  ->{ Time.now.utc },
-    pid: ->{ Process.pid },
-  )
+require 'lines'
 
+module U
   class << self
     # Default logger that outputs to stderr with the Logfmt format
     attr_accessor :logger
@@ -101,4 +104,10 @@ module U
     # shotcut for U.logger.context
     def log_context(data={}); logger.context(data); end
   end
+
+  # Default global
+  self.logger = Log::Logger.new($stderr, Lines,
+    at:  ->{ Time.now.utc },
+    pid: ->{ Process.pid },
+  )
 end

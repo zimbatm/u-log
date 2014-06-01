@@ -12,6 +12,8 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files`.split($/)
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
 
+  spec.add_runtime_dependency "lines"
+
   spec.add_development_dependency "benchmark-ips"
   spec.add_development_dependency "minitest"
 end

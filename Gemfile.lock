@@ -2,11 +2,13 @@ PATH
   remote: .
   specs:
     u-log (0.0.1)
+      lines
 
 GEM
   remote: https://rubygems.org/
   specs:
     benchmark-ips (1.2.0)
+    lines (0.2.0)
     minitest (5.3.3)
 
 PLATFORMS
