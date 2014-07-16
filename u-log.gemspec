@@ -1,7 +1,7 @@
 # coding: utf-8
 Gem::Specification.new do |spec|
   spec.name          = "u-log"
-  spec.version       = "0.0.2"
+  spec.version       = "0.2.0"
   spec.authors       = ["zimbatm"]
   spec.email         = ["zimbatm@zimbatm.com"]
   spec.summary       = %q{a different take on logging}
