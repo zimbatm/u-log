@@ -1,12 +1,12 @@
 # coding: utf-8
 Gem::Specification.new do |spec|
   spec.name          = "u-log"
-  spec.version       = "0.0.1"
+  spec.version       = "0.0.2"
   spec.authors       = ["zimbatm"]
   spec.email         = ["zimbatm@zimbatm.com"]
   spec.summary       = %q{a different take on logging}
-  spec.description   = %q{U::Logger is a very simple logging library made for humans}
-  spec.homepage      = 'https://github.com/zimbatm/u-logger'
+  spec.description   = %q{U::Log is a very simple logging library made for humans}
+  spec.homepage      = 'https://github.com/zimbatm/u-log'
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
