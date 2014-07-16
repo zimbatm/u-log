@@ -28,7 +28,7 @@ module U; module Log
       data[:app] = progname if progname
       data[:msg] = message if message
 
-      @logger.log(data)
+      @ulogger.log(data)
     end
 
     LEVELS.values.each do |level|
