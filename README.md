@@ -43,7 +43,8 @@ l.log("Hey", count: 3) # logs: at=2013-07-14T14:19:28Z msg=Hey count=3
 
 # You can also keep a context
 class MyClass < ActiveRecord::Base
-  attr_reader :lines
+  attr_reader :logger
+
   def initialize(logger)
     @logger = logger.context(my_class_id: self.id)
   end
