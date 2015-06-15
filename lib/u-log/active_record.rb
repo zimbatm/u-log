@@ -3,7 +3,8 @@ require 'active_record/log_subscriber'
 require 'u-log'
 require 'u-log/compat'
 
-module U; module Log
+module U; end
+module U::Log
   class ActiveRecordSubscriber < ActiveSupport::LogSubscriber
     def render_bind(column, value)
       if column
@@ -44,7 +45,7 @@ module U; module Log
       logger.ulogger.log(name: event.payload[:name], line: event.payload[:line])
     end
   end
-end end
+end
 
 # Replace the base logger with our own compatible logger
 ActiveRecord::Base.logger = U.logger.compat

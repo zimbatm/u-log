@@ -1,6 +1,7 @@
 require 'rack/commonlogger'
 
-module U; module Log
+module U; end
+module U::Log
   # Rack middleware that intercept and logs requests/responses pairs
   class RackLogger < Rack::CommonLogger
     # In development mode the common logger is always inserted
@@ -37,4 +38,4 @@ module U; module Log
       )
     end
   end
-end end
+end

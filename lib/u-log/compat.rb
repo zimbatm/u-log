@@ -1,4 +1,5 @@
-module U; module Log
+module U; end
+module U::Log
   # Backward-compatible with the stdlib Logger
   # http://ruby-doc.org/stdlib-2.0/libdoc/logger/rdoc/Logger.html
   class Compat
@@ -58,4 +59,4 @@ module U; module Log
       alias_method(op, :noop)
     end
   end
-end end
+end

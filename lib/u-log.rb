@@ -1,3 +1,5 @@
+# See U::Log
+module U; end
 # U::Log is an opinionated logging library.
 #
 # The main take is that logs are structured.
@@ -23,7 +25,7 @@
 #     ctx = U.log_context(encoding_id: Log.id)
 #     ctx.log({})
 #
-module U; module Log
+module U::Log
   # A very simple logger and log context
   #
   class Logger
@@ -89,12 +91,13 @@ module U; module Log
       data
     end
   end
-end end
+end
 
 require 'lines'
 require 'forwardable'
 
 module U
+  # Utility extensions to the global U namespace
   class << self
     extend Forwardable
     # Default logger that outputs to stderr with the Lines format

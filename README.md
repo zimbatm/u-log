@@ -74,6 +74,21 @@ easy to put too much data.
 Lines logging speed is reasonable but it could be faster. It writes at around
 5000 lines per second to Syslog on my machine.
 
+Protocols
+---------
+
+`U::Log` is governed by a couple of protocols that help keep the library
+composable.
+
+TODO: describe these:
+
+Formatter#dump
+
+Outputter#<<
+
+Data#to_h
+
+
 Conventions
 -----------
 
@@ -93,6 +108,8 @@ Inspired by
 TODO
 ----
 
+* Don't automatically install the logger when requiring u-log/active_record
+* Provide logging for all of rails
 * Integrate with Error reporting
 * Integrate with metrics collection
 * include U::Log to add a #log method in an object
