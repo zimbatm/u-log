@@ -1,6 +1,7 @@
 require 'rack/commonlogger'
 
 module U; module Log
+  # Rack middleware that intercept and logs requests/responses pairs
   class RackLogger < Rack::CommonLogger
     # In development mode the common logger is always inserted
     def self.silence_common_logger!
