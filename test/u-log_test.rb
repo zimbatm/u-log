@@ -11,13 +11,13 @@ class U_LoggerTest < MiniTest::Spec
 
   def setup
     @out = StringIO.new
-    @ctx = Logger.new(output: @out, format: Lines, context: {})
+    @ctx = Logger.new(output: @out)
   end
 
   describe 'context' do
     it 'does stuff' do
-      @ctx.log('hello')
-      assert_equal 'msg=hello' + NL, @out.string
+      @ctx.log('hello', foo: 3)
+      assert_equal 'hello={foo=3}' + NL, @out.string
     end
   end
 end

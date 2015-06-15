@@ -30,7 +30,7 @@ module U::Log
         end
       end
 
-      args[:elapsed] = [event.duration.round(1), 'ms']
+      args[:elapsed_ms] = event.duration.round(1)
 
       logger.ulogger.log(args)
     end

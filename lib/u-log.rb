@@ -41,8 +41,11 @@ module U::Log
     end
 
     # Outputs the given arguments merged with the context.
-    def log(msg=nil, **kwargs)
-      @output << format(args_to_hash(msg, kwargs)) + NL
+    #
+    # If +key+ is given the whole kwargs is stored under that key
+    #
+    def log(key=nil, **kwargs)
+      @output << format(args_to_hash(key, kwargs)) + NL
       nil
     end
 
@@ -82,18 +85,10 @@ module U::Log
       end
     end
 
-    def args_to_hash(msg, **kwargs)
-      data = {}
+    def args_to_hash(key, **kwargs)
       # Allow the first argument to be a message
-      if msg
-        if msg.respond_to? :to_h
-          data.merge! msg.to_h
-        else
-          data.merge! msg: msg
-        end
-      end
-      data.merge!(kwargs)
-      data
+      return {key => kwargs} if key
+      kwargs
     end
   end
 end
