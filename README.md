@@ -28,9 +28,13 @@ Quick intro
 require 'u-log'
 
 # Setups the outputs. IO and Syslog are supported.
-l = U::Log.new($stderr, Lines,
-  at:  ->{ Time.now.utc },
-  pid: ->{ Process.pid },
+l = U::Log.new(
+  output: $stderr,
+  format: Lines,
+  context: {
+    at:  ->{ Time.now.utc },
+    pid: ->{ Process.pid },
+  },
 )
 
 # First example

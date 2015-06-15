@@ -11,7 +11,7 @@ class U_LoggerTest < MiniTest::Spec
 
   def setup
     @out = StringIO.new
-    @ctx = Logger.new(@out, Lines, {})
+    @ctx = Logger.new(output: @out, format: Lines, context: {})
   end
 
   describe 'context' do
