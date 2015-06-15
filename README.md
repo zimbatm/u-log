@@ -1,8 +1,7 @@
 U::Log - a different take on logging
 ====================================
 
-[![Build
-Status](https://travis-ci.org/zimbatm/u-log.svg?branch=master)](https://travis-ci.org/zimbatm/u-log)
+[![Build Status](https://travis-ci.org/zimbatm/u-log.svg?branch=master)](https://travis-ci.org/zimbatm/u-log)
 
 An oppinionated logging library.
 
@@ -60,7 +59,7 @@ Features
 --------
 
 * Simple to use
-* Thread safe (if the IO#write is)
+* Thread safe (if IO#write is)
 * Designed to not raise exceptions (unless it's an IO issue)
 * A backward-compatible Logger is provided in case you want to retrofit
 * require "u-log/active_record" for sane ActiveRecord logs
@@ -75,27 +74,25 @@ easy to put too much data.
 Lines logging speed is reasonable but it could be faster. It writes at around
 5000 lines per second to Syslog on my machine.
 
+Conventions
+-----------
+
+While underscore (`_`) is commonly used to separate `CamelCase` modules to
+`camel_case.rb` file-names, no convention exists when a while library is
+prefixed by a global namespace. That's why I am taking the dash (`-`)
+character for it so that `U::Log` maps to `u-log.rb`.
+
+The `U` namespace is my prefix for very small and composable modules.
+
 Inspired by
 -----------
 
  * Scrolls : https://github.com/asenchi/scrolls
  * Lograge : https://github.com/roidrage/lograge
 
-
-
-
-
-* Very simple (aka. fast)
-* No log level
-
-
-
 TODO
 ----
 
-Error reporting
-
-Create message context
-
-
-Because the log context is hierarchical, 
+* Integrate with Error reporting
+* Integrate with metrics collection
+* include U::Log to add a #log method in an object

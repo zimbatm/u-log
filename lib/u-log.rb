@@ -18,7 +18,6 @@
 #
 # Usage:
 #
-#     
 #     U.log(foo: 3, msg: "This")
 #
 #     ctx = U.log_context(encoding_id: Log.id)
