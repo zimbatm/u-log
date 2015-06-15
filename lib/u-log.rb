@@ -51,20 +51,21 @@ module U::Log
       return self unless data.to_h.any?
       with_data @data.merge(data.to_h)
     end
-
-    alias merge context
+    alias_method :merge, :context
 
     def to_s
       @format.dump(evaluate_procs @data)
     end
 
-    def to_h; @data; end
+    attr_reader :data
+    alias_method :to_h, :data
 
     # Returns a ::Logger-compatible object.
     #
     # Make sure to require 'u-log/compat' before invoking this method.
-    #
-    def compat; Compat.new(self) end
+    def compat
+      ::U::Log::Compat.new(self)
+    end
 
     protected
 
@@ -73,7 +74,7 @@ module U::Log
     end
 
     def evaluate_procs(obj)
-      obj.each_with_object({}) do |(k,v), merged|
+      obj.each_with_object({}) do |(k, v), merged|
         merged[k] = v.respond_to?(:call) ? (v.call rescue $!) : v
       end
     end
@@ -82,8 +83,8 @@ module U::Log
       return {} if args.empty?
       data = @data.dup
       # Allow the first argument to be a message
-      if !args.first.respond_to? :to_h
-        data.merge!(msg: args.shift)
+      unless args.first.respond_to? :to_h
+        data.merge! msg: args.shift
       end
       args.inject(data) do |h, obj|
         h.merge! obj.to_h
@@ -103,9 +104,11 @@ module U
     # Default logger that outputs to stderr with the Lines format
     attr_accessor :logger
 
-    U.logger = Log::Logger.new($stderr, Lines,
-      at:  ->{ Time.now.utc },
-      pid: ->{ Process.pid },
+    U.logger = Log::Logger.new(
+      $stderr,
+      Lines,
+      at:  -> { Time.now.utc },
+      pid: -> { Process.pid },
     )
 
     # U.log shortcut for U.logger.log

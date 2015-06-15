@@ -7,15 +7,10 @@ module U; end
 module U::Log
   class ActiveRecordSubscriber < ActiveSupport::LogSubscriber
     def render_bind(column, value)
-      if column
-        if column.binary?
-          value = "<#{value.bytesize} bytes of binary data>"
-        end
+      return [nil, value] unless column
 
-        [column.name, value]
-      else
-        [nil, value]
-      end
+      value = "<#{value.bytesize} bytes of binary data>" if column.binary?
+      [column.name, value]
     end
 
     def sql(event)
@@ -29,10 +24,9 @@ module U::Log
       args[:sql] = payload[:sql].squeeze(' ')
 
       if payload[:binds] && payload[:binds].any?
-        args[:binds] = payload[:binds].inject({}) do |hash,(col, v)|
+        args[:binds] = payload[:binds].each_with_object({}) do |(col, v), hash|
           k, v = render_bind(col, v)
           hash[k] = v
-          hash
         end
       end
 
@@ -42,7 +36,10 @@ module U::Log
     end
 
     def identity(event)
-      logger.ulogger.log(name: event.payload[:name], line: event.payload[:line])
+      logger.ulogger.log(
+        name: event.payload[:name],
+        line: event.payload[:line],
+      )
     end
   end
 end
@@ -55,15 +52,21 @@ U::Log::ActiveRecordSubscriber.attach_to :active_record
 
 # Remove the default ActiveRecord::LogSubscriber to avoid double outputs
 ActiveSupport::LogSubscriber.log_subscribers.each do |subscriber|
-  if subscriber.is_a?(ActiveRecord::LogSubscriber)
-    component = :active_record
-    events = subscriber.public_methods(false).reject{ |method| method.to_s == 'call' }
-    events.each do |event|
-      ActiveSupport::Notifications.notifier.listeners_for("#{event}.#{component}").each do |listener|
+  next unless subscriber.is_a?(ActiveRecord::LogSubscriber)
+
+  component = :active_record
+  events =
+    subscriber
+    .public_methods(false)
+    .reject { |method| method.to_s == 'call' }
+  events.each do |event|
+    ActiveSupport::Notifications
+      .notifier
+      .listeners_for("#{event}.#{component}")
+      .each do |listener|
         if listener.instance_variable_get('@delegate') == subscriber
           ActiveSupport::Notifications.unsubscribe listener
         end
       end
-    end
   end
 end

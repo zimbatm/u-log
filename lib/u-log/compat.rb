@@ -40,7 +40,8 @@ module U::Log
     alias unknown info
 
     def noop(*); true end
-    %w[add
+    %w[
+      add
       clone
       datetime_format
       datetime_format=
