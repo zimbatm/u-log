@@ -93,21 +93,23 @@ module U; module Log
 end end
 
 require 'lines'
+require 'forwardable'
 
 module U
   class << self
-    # Default logger that outputs to stderr with the Logfmt format
+    extend Forwardable
+    # Default logger that outputs to stderr with the Lines format
     attr_accessor :logger
 
-    # shortcut for U.logger.log
-    def log(*args); logger.log(*args); end
-    # shotcut for U.logger.context
-    def log_context(data={}); logger.context(data); end
-  end
+    U.logger = Log::Logger.new($stderr, Lines,
+      at:  ->{ Time.now.utc },
+      pid: ->{ Process.pid },
+    )
 
-  # Default global
-  self.logger = Log::Logger.new($stderr, Lines,
-    at:  ->{ Time.now.utc },
-    pid: ->{ Process.pid },
-  )
+    # U.log shortcut for U.logger.log
+    def_delegator :@logger, :log
+
+    # U.log_context shotcut for U.logger.context
+    def_delegator :@logger, :log, :log_context
+  end
 end
