@@ -42,7 +42,7 @@ module U::Log
 
     # Outputs the given arguments merged with the context.
     def log(msg=nil, **kwargs)
-      @output << context(args_to_hash(msg, kwargs)).to_s + NL
+      @output << format(args_to_hash(msg, kwargs)) + NL
       nil
     end
 
@@ -61,9 +61,11 @@ module U::Log
     end
     alias_method :merge, :context
 
-    def to_s
-      @format.dump(evaluate_procs @context)
+    # Formats the current context + given data with the formatter
+    def format(data = {})
+      @format.dump evaluate_procs(@context).merge(data)
     end
+    alias to_s format
 
     # Returns a ::Logger-compatible object.
     #
