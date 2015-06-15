@@ -28,9 +28,13 @@ Quick intro
 require 'u-log'
 
 # Setups the outputs. IO and Syslog are supported.
-l = U::Log.new($stderr, Lines,
-  at:  ->{ Time.now.utc },
-  pid: ->{ Process.pid },
+l = U::Log.new(
+  output: $stderr,
+  format: Lines,
+  context: {
+    at:  ->{ Time.now.utc },
+    pid: ->{ Process.pid },
+  },
 )
 
 # First example
@@ -77,17 +81,18 @@ Lines logging speed is reasonable but it could be faster. It writes at around
 Protocols
 ---------
 
-`U::Log` is governed by a couple of protocols that help keep the library
-composable.
+`U::Log::Logger` is governed by a couple of protocols that help keep the
+library composable.
 
-TODO: describe these:
+The first constructor argument is an output. An output object is any object
+that accepts a method call `#<<` with a single String argument. No output is
+expected. The `#<<` method should be thread-safe is multi-threading is
+expected.
 
-Formatter#dump
-
-Outputter#<<
-
-Data#to_h
-
+The second contructor argument is a data formatter. It used the same protocol
+as Marshal and JSON where a `#dump` method is expected which accepts a ruby
+Hash and returns a String. The formatter should not raise any exception but
+instead transform faulty data in a readable output.
 
 Conventions
 -----------
@@ -113,3 +118,16 @@ TODO
 * Integrate with Error reporting
 * Integrate with metrics collection
 * include U::Log to add a #log method in an object
+
+I have to think about how log lines are going to be indexed. One issue I
+encountered on the ELK stack is that JSON events can create an unknown number
+of indexec when dumped directly into ElasticSearch, because the keys in each
+event might vary depending on which source line has produced it.
+
+What could be interesting is to extract only metrics. Let's say we select a
+key format convention where all keys starting with `metrics.` are considered
+of holding a numeric value. The all the other keys are just stored alongside
+but not indexed. If we want to add more dimensions to the metrics then more
+select keys are added as index, selectively. Let's say "pid", "hostname" and
+"ts" for example.
+
